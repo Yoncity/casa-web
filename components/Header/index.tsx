@@ -12,7 +12,7 @@ const Header: React.FC<{}> = () => {
           width={56}
           height={56}
         />
-        <a href="#" className={`${style.header_container__left__app_name}   `}>
+        <a href="#" className={`${style.header_container__left__app_name}`}>
           CASA
         </a>
       </div>

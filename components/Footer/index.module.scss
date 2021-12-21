@@ -1,0 +1,67 @@
+@use "../../styles/abstracts" as *;
+
+.footer_container {
+  background: $color_primary;
+  color: $color_white;
+  padding: $padding_7x $padding_7x $padding_6x;
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &__left {
+      display: flex;
+      align-items: center;
+      &__app_name {
+        font-size: $font_size_6x;
+        font-weight: 600;
+        margin-left: $margin_3x;
+      }
+    }
+    &__right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      div {
+        margin: 0 $margin_2x;
+      }
+    }
+  }
+  &__content {
+    font-size: $font_size_2x;
+    font-weight: 400;
+    margin: $margin_3x 0;
+  }
+  &__footer {
+    margin: $margin_4x 0;
+    &__top {
+      display: flex;
+      padding: $padding_3x 0;
+      border-bottom: 1px solid $color_white;
+      &__language {
+        font-size: $font_size_3x;
+        font-weight: 500;
+        margin: 0 $margin_3x;
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
+    &__bottom {
+      display: flex;
+      justify-content: space-between;
+      padding: $padding_3x 0 0 0;
+      align-items: center;
+      &__left {
+        font-weight: 400;
+        font-size: $font_size_2x;
+      }
+      &__right {
+        font-weight: 700;
+        font-size: $font_size_4x;
+        span {
+          font-weight: 200;
+        }
+      }
+    }
+  }
+}

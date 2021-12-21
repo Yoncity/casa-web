@@ -1,0 +1,60 @@
+@use "../common";
+@use "../abstracts" as *;
+
+.home_container {
+  &__home {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0px $padding_7x;
+    height: 100vh;
+    background: url("/assets/images/lockedEth_2.png") no-repeat right center,
+      url("/assets/images/homepage_background.svg") no-repeat;
+    background-size: 470px 500px, cover;
+    background-origin: content-box, padding-box;
+    &__title,
+    &__content,
+    &__stats {
+      max-width: 55%;
+      color: $color_white;
+      margin-top: 50px;
+    }
+    &__title {
+      font-size: $font_size_7x;
+      font-weight: 600;
+    }
+    &__content {
+      margin: 10px 0;
+      font-size: $font_size_2x;
+      font-weight: 400;
+      &__button {
+        margin: $margin_4x 0;
+      }
+    }
+    &__stats {
+      display: flex;
+      align-items: center;
+      margin-top: $margin_3x;
+      &__data {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        &__title {
+          font-size: $font_size_3x;
+          font-weight: 300;
+          width: 50%;
+          text-align: center;
+        }
+        &__content {
+          font-size: $font_size_7x;
+          font-weight: 600;
+        }
+        &:first-child {
+          margin-right: $margin_2x;
+        }
+      }
+    }
+  }
+}

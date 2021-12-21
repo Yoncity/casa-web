@@ -1,0 +1,9 @@
+<svg id="visual" viewBox="0 0 1440 900" width="1440" height="900" 
+    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+    <path d="M0 75L1440 332L1440 0L0 0Z" fill="#2196f3"></path>
+    <path d="M0 650L1440 685L1440 330L0 73Z" fill="#8d6e63"></path>
+    <path d="M0 649L1440 684L1440 900L0 900Z" fill="#2196f3"></path>
+
+    <rect width="1440" height="900" fill="black" fill-opacity="0.4"/>
+</svg>
+

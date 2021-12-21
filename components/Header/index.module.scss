@@ -1,0 +1,44 @@
+@use "../../styles/abstracts/" as *;
+
+.header_container {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $padding_2x $padding_7x;
+  width: 100%;
+  .link {
+    margin-right: $margin_4x;
+    padding: $padding_2x;
+    color: $color_white;
+    font-size: $font_size_2x;
+    font-weight: 400;
+    &:hover {
+      color: $color_white;
+    }
+    &.active {
+      border: 1px solid $color_white;
+      color: $color_white;
+      border-left: none;
+      border-right: none;
+      font-weight: 500;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  &__left {
+    display: flex;
+    align-items: center;
+    padding: $padding_1x;
+
+    &__app_name {
+      margin-left: $margin_3x;
+      font-size: $font_size_8x;
+      color: $color_white;
+      font-weight: 600;
+    }
+  }
+  &__right {
+  }
+}
