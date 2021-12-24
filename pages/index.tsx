@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import Image from "next/image";
 import Layout from "../components/Layout";
 import style from "../styles/pages/index.module.scss";
 
@@ -45,23 +46,110 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className={style.home_container__how_it_works}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde dolore
-          temporibus sit rerum! Quis harum, sed molestiae velit aperiam
-          temporibus beatae earum voluptate. Recusandae eaque qui doloremque
-          similique veniam at! At eaque exercitationem culpa, nostrum, eligendi
-          laboriosam eius eum rerum, ipsum sed minima est nam molestiae et sint
-          in voluptatum quia veritatis! Veniam officia quis esse modi quibusdam
-          natus deserunt. Culpa iusto magnam cumque quidem vel aspernatur
-          voluptatem facilis officiis pariatur? Consequuntur aspernatur optio
-          sapiente quas placeat sit animi sed. Provident, porro distinctio ullam
-          libero fugit consequuntur quis earum fuga. Nisi sed praesentium
-          blanditiis minima veritatis pariatur mollitia numquam impedit id illo
-          ad atque architecto accusamus quod illum dolor deleniti fugit quaerat
-          sequi, qui sint. Vitae voluptates facilis architecto ratione? Tenetur,
-          dignissimos. Ipsam esse itaque ad voluptate impedit doloribus et
-          possimus nobis dolores quas cum explicabo placeat commodi, libero ea
-          architecto incidunt accusantium, nostrum sequi doloremque ratione quod
-          ipsa deserunt.
+          <p className={style.home_container__how_it_works__title}>
+            How it works?
+          </p>
+
+          <div className={style.home_container__how_it_works__step}>
+            <p className={style.home_container__how_it_works__step__title}>
+              CONNECT
+            </p>
+            <div
+              className={style.home_container__how_it_works__step__description}
+            >
+              <p
+                className={
+                  style.home_container__how_it_works__step__description__content
+                }
+              >
+                Connect you wallet with one of the following supported wallets.
+              </p>
+              <div
+                className={
+                  style.home_container__how_it_works__step__description__details
+                }
+              >
+                <div
+                  className={
+                    style.home_container__how_it_works__step__description__details__images
+                  }
+                >
+                  <Image
+                    src="/assets/icons/trustwallet.png"
+                    alt="Trustwallet icon"
+                    width={56}
+                    height={56}
+                  />
+                </div>
+                <div
+                  className={
+                    style.home_container__how_it_works__step__description__details__images
+                  }
+                >
+                  <Image
+                    src="/assets/icons/metamask.png"
+                    alt="Metamask icon"
+                    width={48}
+                    height={48}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className={style.home_container__how_it_works__step}>
+            <p className={style.home_container__how_it_works__step__title}>
+              LOCK
+            </p>
+            <div
+              className={style.home_container__how_it_works__step__description}
+            >
+              <p
+                className={
+                  style.home_container__how_it_works__step__description__content
+                }
+              >
+                Lock your crypto funds in an account for a specified amount of
+                time of your choosing.
+              </p>
+            </div>
+          </div>
+
+          <div className={style.home_container__how_it_works__step}>
+            <p className={style.home_container__how_it_works__step__title}>
+              WAIT
+            </p>
+            <div
+              className={style.home_container__how_it_works__step__description}
+            >
+              <p
+                className={
+                  style.home_container__how_it_works__step__description__content
+                }
+              >
+                Wait for the desired time that you would wish to lock your funds
+              </p>
+            </div>
+          </div>
+
+          <div className={style.home_container__how_it_works__step}>
+            <p
+              className={`${style.home_container__how_it_works__step__title} ${style.home_container__how_it_works__step__last}`}
+            >
+              WITHDRAW
+            </p>
+            <div
+              className={style.home_container__how_it_works__step__description}
+            >
+              <p
+                className={
+                  style.home_container__how_it_works__step__description__content
+                }
+              >
+                Once the lockdown period is over, withdraw your money
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </Layout>
