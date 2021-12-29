@@ -1,0 +1,30 @@
+@use "../common";
+@use "../abstracts" as *;
+
+.dashboard_container {
+  height: 100vh;
+  background: $background_white;
+  display: flex;
+  flex-direction: column;
+  // justify-content: center;
+  padding: $padding_3x $padding_7x;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    // margin: $margin_6x 0 0 0;
+    &__title {
+      font-size: $font_size_7x;
+      font-weight: 500;
+    }
+  }
+  &__content {
+    display: flex;
+    margin: $margin_4x 0;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    overflow-y: auto;
+  }
+}
