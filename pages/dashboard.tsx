@@ -1,8 +1,36 @@
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/router";
 import Account from "../components/Account";
+import Web3Controller from "../helpers/Web3Controller";
 import style from "../styles/pages/dashboard.module.scss";
+import { InitialState } from "../redux/initialState";
 
 const Dashboard: NextPage = () => {
+  const [web3Controller, setWeb3Controller] = useState<Web3Controller>();
+
+  const { address, error, loading } = useSelector(
+    ({ authenticate }): InitialState["authenticate"] => authenticate
+  );
+
+  useEffect(() => {
+    let _web3Controller: Web3Controller | null = new Web3Controller();
+    if (_web3Controller.supportedBrowser) {
+      setWeb3Controller(_web3Controller);
+      _web3Controller = null;
+    }
+  }, []);
+
+  if (web3Controller && address) {
+    web3Controller.listenToEvents(address);
+  }
+
+  // const router = useRouter();
+  // if (!address) {
+  //   router.push("/");
+  // }
+
   return (
     <div className={style.dashboard_container}>
       <div className={style.dashboard_container__header}>
@@ -24,21 +52,6 @@ const Dashboard: NextPage = () => {
           status={true}
           statusTitle="LOCKED"
           statusValue="Unlocks in 6 months"
-        />
-        <Account
-          status={false}
-          statusTitle="WITHDRAW"
-          statusValue="Lock period has expired"
-        />
-        <Account
-          status={true}
-          statusTitle="LOCKED"
-          statusValue="Unlocks in 6 months"
-        />
-        <Account
-          status={false}
-          statusTitle="WITHDRAW"
-          statusValue="Lock period has expired"
         />
       </div>
     </div>

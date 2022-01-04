@@ -30,6 +30,23 @@
       font-weight: 400;
       &__button {
         margin: $margin_4x 0;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s linear;
+        &__loader {
+          margin: 0 $margin_2x 0 0;
+          width: 20px;
+          height: 20px;
+          border: 1px solid $color_white;
+          border-radius: $border_radius_round;
+          border-top: none;
+          border-right: none;
+          animation: spinner 0.8s linear infinite;
+          display: none;
+        }
+        .show_loader {
+          display: block;
+        }
       }
     }
     &__stats {
@@ -124,5 +141,14 @@
         }
       }
     }
+  }
+}
+
+@keyframes spinner {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }

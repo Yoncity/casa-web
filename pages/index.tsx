@@ -1,9 +1,61 @@
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import type { NextPage } from "next";
 import Image from "next/image";
 import Layout from "../components/Layout";
 import style from "../styles/pages/index.module.scss";
+import Web3Controller from "../helpers/Web3Controller";
+import { useRouter } from "next/router";
+import authenticate from "../redux/actions/auth";
+import { InitialState } from "../redux/initialState";
 
 const Home: NextPage = () => {
+  const [web3Controller, setWeb3Controller] = useState<Web3Controller>();
+  const [contractBalance, setContractBalance] = useState<Number>(0);
+
+  const [totalUsers, setTotalUsers] = useState<Number>(0);
+
+  const router = useRouter();
+
+  const dispatch = useDispatch();
+
+  const { address, error, loading } = useSelector(
+    ({ authenticate }): InitialState["authenticate"] => authenticate
+  );
+
+  async function getContractBalance(_web3Controller: Web3Controller) {
+    let balance = await _web3Controller.getContractBalance();
+    setContractBalance(balance);
+  }
+
+  async function getTotalUsers(_web3Controller: Web3Controller) {
+    let totalUsers = await _web3Controller.getTotalUsers();
+    setTotalUsers(totalUsers);
+  }
+
+  useEffect(() => {
+    let _web3Controller: Web3Controller | null = new Web3Controller();
+    if (_web3Controller.supportedBrowser) {
+      setWeb3Controller(_web3Controller);
+
+      getTotalUsers(_web3Controller);
+
+      getContractBalance(_web3Controller);
+
+      _web3Controller = null;
+    }
+  }, []);
+
+  const getStarted = async () => {
+    if (web3Controller) {
+      if (address) {
+        router.push("/dashboard");
+      } else {
+        authenticate(web3Controller)(dispatch, () => router.push("/dashboard"));
+      }
+    }
+  };
+
   return (
     <Layout>
       <div className={style.home_container}>
@@ -21,8 +73,14 @@ const Home: NextPage = () => {
 
           <button
             className={`${style.button} ${style.button_accent} ${style.home_container__home__content__button}`}
+            onClick={() => getStarted()}
           >
-            GET STARTED
+            <div
+              className={`${
+                style.home_container__home__content__button__loader
+              } ${loading ? style.show_loader : ""}`}
+            ></div>
+            {address ? "Goto Dashboard" : "GET STARTED"}
           </button>
 
           <div className={style.home_container__home__stats}>
@@ -31,7 +89,7 @@ const Home: NextPage = () => {
                 Total Users
               </p>
               <p className={style.home_container__home__stats__data__content}>
-                587
+                {totalUsers}
               </p>
             </div>
 
@@ -40,7 +98,7 @@ const Home: NextPage = () => {
                 Locked Volume
               </p>
               <p className={style.home_container__home__stats__data__content}>
-                $14K
+                {contractBalance}
               </p>
             </div>
           </div>
