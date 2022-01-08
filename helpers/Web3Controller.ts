@@ -1,14 +1,18 @@
 import Web3 from "web3";
 import CASA_ABI from "../constants/contracts/abi/casa.json";
 // import { CASA_ADDRESS } from "../constants/contracts/addresses";
+import createAccount from "../redux/actions/account/createAccount";
 
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+
 class Web3Controller {
   web3: any;
   ethereum: any = window.ethereum;
   casaContract: any;
 
   supportedBrowser = this.ethereum ? true : false;
+
+  eventBlocks = new Set();
 
   constructor() {
     this.web3 = new Web3(this.ethereum);
@@ -37,12 +41,34 @@ class Web3Controller {
     return totalUsers;
   }
 
-  listenToEvents(address: string) {
-    console.log("🚀 --- listenToEvents --- address", address);
+  isDuplicate(blockNumber: Number) {
+    if (this.eventBlocks.has(blockNumber)) return true;
+    this.eventBlocks.add(blockNumber);
+    return false;
+  }
+
+  listenToEvents(address: string, dispatch: any) {
     this.casaContract.events.NewAccount(
-      { filter: { ownerAddress: [address] } },
-      (error: any, data: any) => {
-        if (!error) console.log("🚀 --- data", data);
+      { fromBlock: "latest", filter: { ownerAddress: [address] } },
+      (error: any, result: any) => {
+        if (error) {
+          console.log("🚀 --- listenToEvents --- error", error);
+          return;
+        }
+
+        if (!this.isDuplicate(result.blockNumber)) {
+          const data = {
+            transactionHash: result.transactionHash,
+            blockNumber: result.blockNumber,
+            blockHash: result.blockHash,
+            signature: result.signature,
+            owner: result.returnValues.ownerAddress,
+            accountNumber: result.returnValues._account,
+            balance: result.returnValues._amount,
+            timestamp: result.returnValues._timestamp,
+          };
+          dispatch(createAccount(data));
+        }
       }
     );
   }

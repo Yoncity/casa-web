@@ -14,6 +14,8 @@ const Dashboard: NextPage = () => {
     ({ authenticate }): InitialState["authenticate"] => authenticate
   );
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     let _web3Controller: Web3Controller | null = new Web3Controller();
     if (_web3Controller.supportedBrowser) {
@@ -23,7 +25,7 @@ const Dashboard: NextPage = () => {
   }, []);
 
   if (web3Controller && address) {
-    web3Controller.listenToEvents(address);
+    web3Controller.listenToEvents(address, dispatch);
   }
 
   // const router = useRouter();
