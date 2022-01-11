@@ -1,4 +1,4 @@
-import "./index.scss";
+import style from "./index.module.scss";
 
 type Props = {
   header: string;
@@ -17,21 +17,21 @@ const Modal: React.FC<Props> = ({
 }) => {
   const body = () => {
     return (
-      <div className="modal-main-container">
-        <div className="modal-container">
-          <div className="modal-header-container">
-            <p className="modal-header-title">{header}</p>
+      <div className={style.modal_main_container}>
+        <div className={style.modal_container}>
+          <div className={style.modal_header_container}>
+            <p className={style.modal_header_title}>{header}</p>
             <span
-              className="modal-header-close-button"
+              className={style.modal_header_close_button}
               onClick={() => setShowModal(!showModal)}
             >
               &times;
             </span>
           </div>
-          <div className="modal-body-container">{children}</div>
+          <div className={style.modal_body_container}>{children}</div>
           {footer && (
-            <div className="modal-footer-container">
-              <p className="modal-footer-text">{footer}</p>
+            <div className={style.modal_footer_container}>
+              <p className={style.modal_footer_text}>{footer}</p>
             </div>
           )}
         </div>

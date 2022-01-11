@@ -7,12 +7,13 @@ const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 
 class Web3Controller {
   web3: any;
+  // @ts-ignore
   ethereum: any = window.ethereum;
   casaContract: any;
 
   supportedBrowser = this.ethereum ? true : false;
 
-  eventBlocks = new Set();
+  BLOCKS: Array<Number> = [];
 
   constructor() {
     this.web3 = new Web3(this.ethereum);
@@ -42,8 +43,8 @@ class Web3Controller {
   }
 
   isDuplicate(blockNumber: Number) {
-    if (this.eventBlocks.has(blockNumber)) return true;
-    this.eventBlocks.add(blockNumber);
+    if (this.BLOCKS.includes(blockNumber)) return true;
+    this.BLOCKS.push(blockNumber);
     return false;
   }
 

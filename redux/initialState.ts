@@ -7,7 +7,7 @@ export default {
   createAccount: {
     loading: false,
     error: null,
-    success: false,
+    data: null,
   },
   getAccounts: {
     loading: false,

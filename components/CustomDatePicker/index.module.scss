@@ -1,0 +1,37 @@
+@use "../../styles/abstracts" as *;
+
+.datepicker_container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  &__header {
+    //   border-bottom: 1px solid $color_primary;
+    display: flex;
+    align-items: center;
+
+    button {
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      border: none;
+      font-size: $font_size_4x;
+      cursor: pointer;
+    }
+    select {
+      padding: $padding_1x;
+      background: transparent;
+      outline: none;
+      cursor: pointer;
+    }
+    &__year {
+      border-radius: $border_radius_3x 0 0 $border_radius_3x;
+      border: 1px solid $color_step;
+      border-right: none;
+    }
+    &__month {
+      border-radius: 0 $border_radius_3x $border_radius_3x 0;
+      border: 1px solid $color_step;
+      border-left: none;
+    }
+  }
+}

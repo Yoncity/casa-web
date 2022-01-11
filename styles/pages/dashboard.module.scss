@@ -28,3 +28,36 @@
     overflow-y: auto;
   }
 }
+
+.new_account {
+  &__lock_date {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #aaa;
+    border-radius: $border_radius_2x;
+    padding: 0 $padding_3x;
+    margin: $margin_3x 0 0 0;
+    cursor: pointer;
+    position: relative;
+    p {
+      font-size: $font_size_3x;
+      color: $color_gray_4;
+    }
+    &__title {
+      // font-style: italic;
+    }
+    &__date_container {
+      display: flex;
+      p {
+        padding: $padding_3x;
+        color: $color_gray_2;
+      }
+    }
+  }
+  button {
+    padding: $padding_2x $padding_3x;
+    width: 100%;
+    margin: $margin_3x 0;
+  }
+}

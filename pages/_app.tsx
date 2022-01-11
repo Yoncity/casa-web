@@ -2,6 +2,8 @@ import "../styles/globals.scss";
 import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import store from "../redux";
+// import "react-datepicker/dist/react-datepicker.css";
+import "react-datepicker/src/stylesheets/datepicker.scss";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
