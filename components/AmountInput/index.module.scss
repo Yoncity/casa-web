@@ -1,6 +1,7 @@
 @use "../../styles/abstracts" as *;
 .input_container {
   display: flex;
+  width: 100%;
   margin: 15px 0 0 0;
   align-items: center;
   border: 1px solid #aaa;
@@ -16,6 +17,7 @@
     font-size: 20px;
     border: none;
     outline: none;
+    width: inherit;
     flex: 1;
     font-size: $font_size_3x;
   }

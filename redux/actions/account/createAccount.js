@@ -4,10 +4,16 @@ import axios from "../../../middlewares/axios";
 const createAccountStarted = () => ({
   type: types.CREATE_ACCOUNT_START,
 });
+
+export const createAccountPending = () => ({
+  type: types.CREATE_ACCOUNT_PENDING,
+});
+
 const createAccountSuccess = (data) => ({
   type: types.CREATE_ACCOUNT_SUCCESS,
   payload: { data },
 });
+
 const createAccountError = (error) => ({
   type: types.CREATE_ACCOUNT_ERROR,
   payload: { error },

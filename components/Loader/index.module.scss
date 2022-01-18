@@ -1,0 +1,45 @@
+@use "../../styles/abstracts/colors" as *;
+.main_loader_container {
+  position: absolute;
+  left: 45%;
+  top: 45%;
+  .loader_container {
+    width: 70px;
+    height: 70px;
+    border: 1px solid $color_primary;
+    border-radius: 50%;
+    position: relative;
+    animation: spinner 2s ease-in-out infinite;
+    .loader_circle {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      top: -15px;
+      left: 17px;
+      background: $color_primary;
+      border: 1px dotted $color_primary;
+      border-radius: 50%;
+      animation: explode 2s linear infinite alternate;
+    }
+  }
+}
+@keyframes spinner {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes explode {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  to {
+    transform: scale(1);
+  }
+}

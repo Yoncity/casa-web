@@ -1,7 +1,9 @@
+import dayjs from "dayjs";
 import Web3 from "web3";
 import CASA_ABI from "../constants/contracts/abi/casa.json";
-// import { CASA_ADDRESS } from "../constants/contracts/addresses";
-import createAccount from "../redux/actions/account/createAccount";
+import createAccount, {
+  createAccountPending,
+} from "../redux/actions/account/createAccount";
 
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 
@@ -49,7 +51,7 @@ class Web3Controller {
   }
 
   listenToEvents(address: string, dispatch: any) {
-    this.casaContract.events.NewAccount(
+    this.casaContract.events.allEvents(
       { fromBlock: "latest", filter: { ownerAddress: [address] } },
       (error: any, result: any) => {
         if (error) {
@@ -63,16 +65,51 @@ class Web3Controller {
             blockNumber: result.blockNumber,
             blockHash: result.blockHash,
             signature: result.signature,
-            owner: result.returnValues.ownerAddress,
+            owner: (result.returnValues.ownerAddress as string).toLowerCase(),
             accountNumber: result.returnValues._account,
             balance: result.returnValues._amount,
             timestamp: result.returnValues._timestamp,
           };
-          dispatch(createAccount(data));
+
+          switch (result.event) {
+            case "NewAccount":
+              dispatch(createAccount(data));
+              break;
+            case "UpdateAccount":
+              // dispatch(createAccount(data));
+              break;
+            case "CloseAccount":
+              // dispatch(createAccount(data));
+              break;
+            default:
+            // dispatch(createAccount(data));
+          }
         }
       }
     );
   }
+
+  newLock(address: string, _timestamp: Date, _amount: String, dispatch: any) {
+    const amount = this.web3.utils.toWei(_amount);
+    const timestamp = dayjs(_timestamp).format("YYYYMMDD");
+    const encoded = this.casaContract.methods.lockEth(timestamp).encodeABI();
+    const tx = {
+      from: address,
+      to: CONTRACT_ADDRESS,
+      data: encoded,
+      nonce: "0x00",
+      value: this.web3.utils.numberToHex(amount),
+    };
+
+    this.ethereum
+      .request({ method: "eth_sendTransaction", params: [tx] })
+      .then(() => dispatch(createAccountPending()))
+      .catch((error: any) => console.log("🚀 --- newLock --- error", error));
+  }
+
+  updateAccount(address: string, timestamp: Number) {}
+
+  closeAccount(address: string, account: Number) {}
 }
 
 export default Web3Controller;

@@ -6,6 +6,7 @@ export default {
   },
   createAccount: {
     loading: false,
+    pending: false,
     error: null,
     data: null,
   },

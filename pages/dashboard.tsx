@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useSelector, useDispatch } from "react-redux";
 import Account from "../components/Account";
@@ -6,15 +6,16 @@ import Web3Controller from "../helpers/Web3Controller";
 import style from "../styles/pages/dashboard.module.scss";
 import { InitialState } from "../redux/initialState";
 import AmountInput from "../components/AmountInput";
-
 import Modal from "../components/Modal";
 import CustomDatePicker from "../components/CustomDatePicker";
 import dayjs from "dayjs";
+import getAccounts from "../redux/actions/account/getAccounts";
+import Loader from "../components/Loader";
 
 const Dashboard: NextPage = () => {
   const [web3Controller, setWeb3Controller] = useState<Web3Controller>();
 
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [amount, setAmount] = useState("");
   const [amountError, setAmountError] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -22,6 +23,14 @@ const Dashboard: NextPage = () => {
 
   const { address, error, loading } = useSelector(
     ({ authenticate }): InitialState["authenticate"] => authenticate
+  );
+
+  const {
+    data: accounts,
+    error: accountsError,
+    loading: accountsLoading,
+  } = useSelector(
+    ({ getAccounts }): InitialState["getAccounts"] => getAccounts
   );
 
   const dispatch = useDispatch();
@@ -43,7 +52,11 @@ const Dashboard: NextPage = () => {
       setWeb3Controller(_web3Controller);
       _web3Controller = null;
     }
-  }, []);
+
+    if (address) {
+      dispatch(getAccounts(address));
+    }
+  }, [dispatch, address]);
 
   if (web3Controller && address) {
     web3Controller.listenToEvents(address, dispatch);
@@ -54,6 +67,22 @@ const Dashboard: NextPage = () => {
   //   router.push("/");
   // }
 
+  const body = () => {
+    if (accountsLoading) {
+      return <Loader />;
+    }
+
+    if (accountsError) {
+      return <p className="error">{accountsError}</p>;
+    }
+
+    if (accounts) {
+      return accounts.map((account: any) => (
+        <Account key={account._id} data={account} />
+      ));
+    }
+  };
+
   return (
     <>
       <div className={style.dashboard_container}>
@@ -61,23 +90,15 @@ const Dashboard: NextPage = () => {
           <p className={style.dashboard_container__header__title}>
             Locked Accounts
           </p>
-          <button className={`${style.button} ${style.button_primary}`}>
+          <button
+            className={`${style.button} ${style.button_primary}`}
+            onClick={() => setShowModal(true)}
+          >
             Lock Now
           </button>
         </div>
 
-        <div className={style.dashboard_container__content}>
-          <Account
-            status={false}
-            statusTitle="WITHDRAW"
-            statusValue="Lock period has expired"
-          />
-          <Account
-            status={true}
-            statusTitle="LOCKED"
-            statusValue="Unlocks in 6 months"
-          />
-        </div>
+        <div className={style.dashboard_container__content}>{body()}</div>
       </div>
       <Modal
         header="New Account"
@@ -125,7 +146,14 @@ const Dashboard: NextPage = () => {
             )}
           </div>
 
-          <button className={`${style.button} ${style.button_primary}`}>
+          <button
+            className={`${style.button} ${style.button_primary}`}
+            onClick={() => {
+              if (web3Controller && address) {
+                web3Controller.newLock(address, selectedDate, amount, dispatch);
+              }
+            }}
+          >
             Finish
           </button>
         </div>

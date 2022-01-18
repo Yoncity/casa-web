@@ -1,23 +1,34 @@
+import dayjs from "dayjs";
+import parseDate from "../../helpers/parseDate";
 import style from "./index.module.scss";
 
 type Props = {
-  status: boolean;
-  statusTitle: string;
-  statusValue: string;
+  data: any;
 };
 
 const statusMessage = {
-  true: {
+  unlocked: {
     title: "WITHDRAW",
     value: "Lock period has expired",
   },
-  false: {
+  locked: {
     title: "LOCKED",
     value: "Lock period has expired",
   },
 };
 
-const Account: React.FC<Props> = ({ status, statusTitle, statusValue }) => {
+const Account: React.FC<Props> = ({ data }) => {
+  const status =
+    data.timestamp > parseInt(dayjs(new Date()).format("YYYYMMDD"));
+
+  const statusTitle = status
+    ? statusMessage.locked.title
+    : statusMessage.unlocked.title;
+
+  const statusValue = status
+    ? statusMessage.locked.value
+    : statusMessage.unlocked.value;
+
   return (
     <div className={style.account_container}>
       <p className={style.account_container__title}>Account #1</p>
@@ -36,12 +47,16 @@ const Account: React.FC<Props> = ({ status, statusTitle, statusValue }) => {
 
       <div className={style.account_container__info}>
         <p className={style.account_container__info__title}>Locked In</p>
-        <p className={style.account_container__info__value}>21st August 2021</p>
+        <p className={style.account_container__info__value}>
+          {dayjs(data.createdAt).format("DD MMMM YYYY")}
+        </p>
       </div>
 
       <div className={style.account_container__info}>
         <p className={style.account_container__info__title}>Unlocks In</p>
-        <p className={style.account_container__info__value}>21st August 2021</p>
+        <p className={style.account_container__info__value}>
+          {parseDate(String(data.timestamp)).format("DD MMMM YYYY")}
+        </p>
       </div>
 
       <div className={style.account_container__action_container}>

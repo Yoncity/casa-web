@@ -1,4 +1,4 @@
-import * as types from "../../actionTypes/account/getAccountss";
+import * as types from "../../actionTypes/account/getAccounts";
 import server from "../../../middlewares/axios";
 
 const getAccountsStarted = () => ({
@@ -13,15 +13,14 @@ const getAccountsError = (error) => ({
   payload: { error },
 });
 
-const getAccounts = () => async (dispatch) => {
+const getAccounts = (address) => async (dispatch) => {
   dispatch(getAccountsStarted());
   try {
-    const res = await server.get("/accounts");
+    const res = await server.get(`/accounts/${address}`);
 
     const { status, message, data } = res.data;
-    if (status !== 200) throw new Error(message);
 
-    console.log("🚀 --- getAccounts --- data", data);
+    if (status !== 200) throw new Error(message);
 
     dispatch(getAccountsSuccess(data));
   } catch (error) {
