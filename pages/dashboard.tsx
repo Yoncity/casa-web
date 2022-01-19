@@ -11,6 +11,7 @@ import CustomDatePicker from "../components/CustomDatePicker";
 import dayjs from "dayjs";
 import getAccounts from "../redux/actions/account/getAccounts";
 import Loader from "../components/Loader";
+import NoAccount from "../components/NoAccount";
 
 const Dashboard: NextPage = () => {
   const [web3Controller, setWeb3Controller] = useState<Web3Controller>();
@@ -76,9 +77,17 @@ const Dashboard: NextPage = () => {
       return <p className="error">{accountsError}</p>;
     }
 
+    if (accounts && accounts.length === 0) {
+      return <NoAccount />;
+    }
+
     if (accounts) {
       return accounts.map((account: any) => (
-        <Account key={account._id} data={account} />
+        <Account
+          key={account._id}
+          data={account}
+          web3Controller={web3Controller}
+        />
       ));
     }
   };

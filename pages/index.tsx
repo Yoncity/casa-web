@@ -7,12 +7,12 @@ import style from "../styles/pages/index.module.scss";
 import Web3Controller from "../helpers/Web3Controller";
 import { useRouter } from "next/router";
 import authenticate from "../redux/actions/auth";
+import getStatistics from "../redux/actions/statistics";
 import { InitialState } from "../redux/initialState";
 
 const Home: NextPage = () => {
   const [web3Controller, setWeb3Controller] = useState<Web3Controller>();
   const [contractBalance, setContractBalance] = useState<Number>(0);
-
   const [totalUsers, setTotalUsers] = useState<Number>(0);
 
   const router = useRouter();
@@ -22,6 +22,12 @@ const Home: NextPage = () => {
   const { address, error, loading } = useSelector(
     ({ authenticate }): InitialState["authenticate"] => authenticate
   );
+
+  const {
+    data: statisticsData,
+    error: statisticsError,
+    loading: statisticsLoading,
+  } = useSelector(({ statistics }): InitialState["statistics"] => statistics);
 
   async function getContractBalance(_web3Controller: Web3Controller) {
     let balance = await _web3Controller.getContractBalance();
@@ -34,7 +40,10 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
+    // getStatistics()(dispatch);
+
     let _web3Controller: Web3Controller | null = new Web3Controller();
+
     if (_web3Controller.supportedBrowser) {
       setWeb3Controller(_web3Controller);
 
@@ -44,7 +53,7 @@ const Home: NextPage = () => {
 
       _web3Controller = null;
     }
-  }, []);
+  }, [dispatch]);
 
   const getStarted = async () => {
     if (web3Controller) {

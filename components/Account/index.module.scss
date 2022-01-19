@@ -1,4 +1,5 @@
 @use "../../styles/abstracts" as *;
+@use "../../styles/common.scss";
 
 .account_container {
   position: relative;
@@ -34,9 +35,6 @@
           color: $color_gray_4;
         }
       }
-      &:hover {
-        background: $color_white_2;
-      }
     }
     .custom_button_active {
       background: $color_primary;
@@ -69,6 +67,7 @@
     z-index: 1;
     &__action {
       padding: $padding_2x;
+      position: relative;
       display: none;
       flex-direction: column;
       align-items: center;
@@ -79,13 +78,32 @@
       &__title {
         font-size: $font_size_3x;
         font-weight: 700;
+        color: $color_gray;
       }
       &__value {
         font-size: $font_size_1x;
         padding: $padding_1x;
+        color: $color_gray_2;
       }
       p {
         text-align: center;
+      }
+      &__update {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: $padding_1x $padding_2x;
+        position: absolute;
+        bottom: -25px;
+        background-color: $color_white;
+        border-radius: 0 0 $border_radius_2x $border_radius_2x;
+        &__title {
+          font-size: $font_size_1x;
+          padding: 0 $padding_1x;
+          &:hover {
+            color: $color_gray !important;
+          }
+        }
       }
     }
   }
@@ -94,6 +112,10 @@
     font-weight: 700;
     color: $color_gray_3;
     margin-bottom: $margin_2x;
+    &__account_number {
+      margin-left: $margin_2x;
+      color: $color_gray_2;
+    }
   }
   &__info {
     margin: $margin_2x 0;
@@ -109,6 +131,14 @@
       font-weight: 500;
       font-size: $font_size_5x;
     }
+  }
+}
+
+.update_account {
+  button {
+    padding: $padding_2x $padding_3x;
+    width: 100%;
+    margin: $margin_3x 0;
   }
 }
 

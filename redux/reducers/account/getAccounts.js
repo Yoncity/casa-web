@@ -9,6 +9,9 @@ const getAccounts = (state = initialState.getAccounts, { type, payload }) => {
       return { loading: false, error: null, data: payload.data };
     case types.GET_ACCOUNT_ERROR:
       return { loading: false, error: payload.error, data: null };
+    case types.ADD_NEW_ACCOUNT:
+      state.data?.push(payload.data);
+      return { ...state };
     default:
       return state;
   }

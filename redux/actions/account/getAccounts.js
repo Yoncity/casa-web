@@ -13,6 +13,11 @@ const getAccountsError = (error) => ({
   payload: { error },
 });
 
+export const addNewAccount = (data) => ({
+  type: types.ADD_NEW_ACCOUNT,
+  payload: { data },
+});
+
 const getAccounts = (address) => async (dispatch) => {
   dispatch(getAccountsStarted());
   try {

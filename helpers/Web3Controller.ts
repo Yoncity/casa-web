@@ -4,6 +4,9 @@ import CASA_ABI from "../constants/contracts/abi/casa.json";
 import createAccount, {
   createAccountPending,
 } from "../redux/actions/account/createAccount";
+import updateAccount, {
+  updateAccountPending,
+} from "../redux/actions/account/updateAccount";
 
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 
@@ -60,29 +63,38 @@ class Web3Controller {
         }
 
         if (!this.isDuplicate(result.blockNumber)) {
+          const accountDetails = {
+            owner: (result.returnValues.ownerAddress as string).toLowerCase(),
+            accountNumber: result.returnValues._account,
+          };
           const data = {
             transactionHash: result.transactionHash,
             blockNumber: result.blockNumber,
             blockHash: result.blockHash,
             signature: result.signature,
-            owner: (result.returnValues.ownerAddress as string).toLowerCase(),
-            accountNumber: result.returnValues._account,
-            balance: result.returnValues._amount,
-            timestamp: result.returnValues._timestamp,
           };
-
           switch (result.event) {
             case "NewAccount":
-              dispatch(createAccount(data));
+              createAccount({
+                ...accountDetails,
+                balance: result.returnValues._amount,
+                timestamp: result.returnValues._timestamp,
+                ...data,
+              })(dispatch);
               break;
             case "UpdateAccount":
-              // dispatch(createAccount(data));
+              updateAccount(accountDetails, {
+                ...data,
+                amount: result.returnValues._amount,
+                status: "update_account",
+              })(dispatch);
               break;
             case "CloseAccount":
-              // dispatch(createAccount(data));
+              updateAccount(accountDetails, {
+                ...data,
+                status: "close_account",
+              })(dispatch);
               break;
-            default:
-            // dispatch(createAccount(data));
           }
         }
       }
@@ -107,9 +119,47 @@ class Web3Controller {
       .catch((error: any) => console.log("🚀 --- newLock --- error", error));
   }
 
-  updateAccount(address: string, timestamp: Number) {}
+  updateAccount(
+    address: string,
+    accountNumber: number,
+    _amount: String,
+    dispatch: any
+  ) {
+    const amount = this.web3.utils.toWei(_amount);
+    const encoded = this.casaContract.methods
+      .updateLockedEth(accountNumber)
+      .encodeABI();
+    const tx = {
+      from: address,
+      to: CONTRACT_ADDRESS,
+      data: encoded,
+      nonce: "0x00",
+      value: this.web3.utils.numberToHex(amount),
+    };
 
-  closeAccount(address: string, account: Number) {}
+    this.ethereum
+      .request({ method: "eth_sendTransaction", params: [tx] })
+      .then(() => dispatch(updateAccountPending()))
+      .catch((error: any) => console.log("🚀 --- newLock --- error", error));
+  }
+
+  closeAccount(address: string, accountNumber: Number, dispatch: any) {
+    const timestamp = dayjs().format("YYYYMMDD");
+    const encoded = this.casaContract.methods
+      .unLockEth(accountNumber, timestamp)
+      .encodeABI();
+    const tx = {
+      from: address,
+      to: CONTRACT_ADDRESS,
+      data: encoded,
+      nonce: "0x00",
+    };
+
+    this.ethereum
+      .request({ method: "eth_sendTransaction", params: [tx] })
+      .then(() => dispatch(createAccountPending()))
+      .catch((error: any) => console.log("🚀 --- newLock --- error", error));
+  }
 }
 
 export default Web3Controller;

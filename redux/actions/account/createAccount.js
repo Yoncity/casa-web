@@ -1,5 +1,6 @@
 import * as types from "../../actionTypes/account/createAccount";
 import axios from "../../../middlewares/axios";
+import { addNewAccount } from "./getAccounts";
 
 const createAccountStarted = () => ({
   type: types.CREATE_ACCOUNT_START,
@@ -24,11 +25,12 @@ const createAccount = (data) => async (dispatch) => {
   try {
     const res = await axios.post("/accounts", data);
 
-    const { status, message } = res.data;
+    const { status, message, data: resData } = res.data;
 
     if (status !== 201) throw new Error(message);
 
-    dispatch(createAccountSuccess(data));
+    dispatch(createAccountSuccess(resData));
+    dispatch(addNewAccount(resData));
   } catch (error) {
     dispatch(createAccountError(error.message));
   }
