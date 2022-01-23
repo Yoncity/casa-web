@@ -53,7 +53,7 @@ class Web3Controller {
     return false;
   }
 
-  listenToEvents(address: string, dispatch: any) {
+  listenToEvents(address: string, dispatch: any, callback: any) {
     this.casaContract.events.allEvents(
       { fromBlock: "latest", filter: { ownerAddress: [address] } },
       (error: any, result: any) => {
@@ -96,6 +96,7 @@ class Web3Controller {
               })(dispatch);
               break;
           }
+          callback();
         }
       }
     );

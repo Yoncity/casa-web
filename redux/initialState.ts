@@ -22,7 +22,7 @@ export default {
   },
   updateAccount: {
     loading: false,
-    pending: false,
+    pending: true,
     error: null,
     data: [],
   },

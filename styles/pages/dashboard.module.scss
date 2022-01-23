@@ -56,8 +56,31 @@
     }
   }
   button {
-    padding: $padding_2x $padding_3x;
+    position: relative;
     width: 100%;
-    margin: $margin_3x 0;
+    margin: $margin_2x 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.not_logged_in_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  height: 100vh;
+  background: $background_white;
+  &__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: $color_primary;
+    padding: $padding_4x $padding_6x;
+    color: $color_white;
+    border-radius: $border_radius_3x;
+    cursor: pointer;
   }
 }

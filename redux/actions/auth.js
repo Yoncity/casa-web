@@ -17,7 +17,7 @@ const authenticate = (web3Controller) => async (dispatch, callback) => {
   try {
     const address = await web3Controller.connectWallet();
     dispatch(authSuccess(address));
-    if (address) callback();
+    if (address) callback?.();
   } catch (error) {
     dispatch(authError(error.message));
   }

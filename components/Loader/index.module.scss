@@ -1,4 +1,4 @@
-@use "../../styles/abstracts/colors" as *;
+@use "../../styles/abstracts/" as *;
 .main_loader_container {
   position: absolute;
   left: 45%;
@@ -23,12 +23,59 @@
     }
   }
 }
+
+.main_loader_container_mini {
+  position: static;
+  left: 0%;
+  top: 0%;
+  margin-right: $margin_3x;
+  .loader_container {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    position: relative;
+    animation: spinner_2 2s ease-in-out infinite;
+    .loader_circle {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      top: -4px;
+      left: 9px;
+      background: $color_white;
+      border: 1px dotted $color_white;
+      border-radius: 50%;
+      animation: explode 2s linear infinite alternate;
+    }
+    .loader_circle_2 {
+      position: absolute;
+      bottom: -4px;
+      left: 9px;
+      width: 9px;
+      height: 9px;
+      background: $color_white;
+      border: 1px dotted $color_white;
+      border-radius: 50%;
+      animation: explode 2s linear infinite alternate;
+    }
+  }
+}
+
 @keyframes spinner {
   from {
     transform: rotate(0);
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner_2 {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(720deg);
   }
 }
 
@@ -39,7 +86,7 @@
   50% {
     transform: scale(1.5);
   }
-  to {
+  100% {
     transform: scale(1);
   }
 }

@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
+import Router from "next/router";
 import { useSelector, useDispatch } from "react-redux";
-import Account from "../components/Account";
+import dayjs from "dayjs";
 import Web3Controller from "../helpers/Web3Controller";
 import style from "../styles/pages/dashboard.module.scss";
-import { InitialState } from "../redux/initialState";
 import AmountInput from "../components/AmountInput";
 import Modal from "../components/Modal";
+import Account from "../components/Account";
 import CustomDatePicker from "../components/CustomDatePicker";
-import dayjs from "dayjs";
-import getAccounts from "../redux/actions/account/getAccounts";
 import Loader from "../components/Loader";
 import NoAccount from "../components/NoAccount";
+import { InitialState } from "../redux/initialState";
+import authenticate from "../redux/actions/auth";
+import getAccounts from "../redux/actions/account/getAccounts";
 
 const Dashboard: NextPage = () => {
   const [web3Controller, setWeb3Controller] = useState<Web3Controller>();
@@ -34,6 +36,15 @@ const Dashboard: NextPage = () => {
     ({ getAccounts }): InitialState["getAccounts"] => getAccounts
   );
 
+  const {
+    data: createAccount,
+    error: createAccountError,
+    loading: createAccountLoading,
+    pending: createAccountPending,
+  } = useSelector(
+    ({ createAccount }): InitialState["createAccount"] => createAccount
+  );
+
   const dispatch = useDispatch();
 
   const handleAmountChange = ({ target: { value } }: any) => {
@@ -53,20 +64,17 @@ const Dashboard: NextPage = () => {
       setWeb3Controller(_web3Controller);
       _web3Controller = null;
     }
+  }, []);
 
+  useEffect(() => {
     if (address) {
       dispatch(getAccounts(address));
     }
   }, [dispatch, address]);
 
   if (web3Controller && address) {
-    web3Controller.listenToEvents(address, dispatch);
+    web3Controller.listenToEvents(address, dispatch, () => setShowModal(false));
   }
-
-  // const router = useRouter();
-  // if (!address) {
-  //   router.push("/");
-  // }
 
   const body = () => {
     if (accountsLoading) {
@@ -92,23 +100,45 @@ const Dashboard: NextPage = () => {
     }
   };
 
+  const notLoggedIn = () => {
+    return (
+      <div className={style.not_logged_in_container}>
+        <button
+          className={`${style.button} ${style.button_primary} ${style.not_logged_in_container__button}`}
+          onClick={() => {
+            if (web3Controller) {
+              authenticate(web3Controller)(dispatch);
+            }
+          }}
+        >
+          {loading && <Loader mini={true} />}
+          Please Connect Wallet
+        </button>
+      </div>
+    );
+  };
+
   return (
     <>
-      <div className={style.dashboard_container}>
-        <div className={style.dashboard_container__header}>
-          <p className={style.dashboard_container__header__title}>
-            Locked Accounts
-          </p>
-          <button
-            className={`${style.button} ${style.button_primary}`}
-            onClick={() => setShowModal(true)}
-          >
-            Lock Now
-          </button>
-        </div>
+      {!address ? (
+        notLoggedIn()
+      ) : (
+        <div className={style.dashboard_container}>
+          <div className={style.dashboard_container__header}>
+            <p className={style.dashboard_container__header__title}>
+              Locked Accounts
+            </p>
+            <button
+              className={`${style.button} ${style.button_primary}`}
+              onClick={() => setShowModal(true)}
+            >
+              Lock Now
+            </button>
+          </div>
 
-        <div className={style.dashboard_container__content}>{body()}</div>
-      </div>
+          <div className={style.dashboard_container__content}>{body()}</div>
+        </div>
+      )}
       <Modal
         header="New Account"
         showModal={showModal}
@@ -162,8 +192,19 @@ const Dashboard: NextPage = () => {
                 web3Controller.newLock(address, selectedDate, amount, dispatch);
               }
             }}
+            disabled={createAccountLoading || createAccountPending}
           >
-            Finish
+            {createAccountLoading && (
+              <>
+                <Loader mini={true} /> Creating Account
+              </>
+            )}
+            {createAccountPending && (
+              <>
+                <Loader mini={true} /> Confirming Transaction
+              </>
+            )}
+            {!createAccountLoading && !createAccountPending && "Finish"}
           </button>
         </div>
       </Modal>
