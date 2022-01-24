@@ -53,7 +53,7 @@ const Footer: React.FC<{}> = () => {
 
         <div className={style.footer_container__footer__bottom}>
           <p className={style.footer_container__footer__bottom__left}>
-            © 2021 Coin OP Laundry. All Rights Reserved.
+            © {new Date().getFullYear()} siyona. All Rights Reserved.
           </p>
           <p className={style.footer_container__footer__bottom__right}>
             <span className={style.light}>Developed By</span> Yoncity

@@ -68,7 +68,7 @@ const Home: NextPage = () => {
   return (
     <Layout>
       <div className={style.home_container}>
-        <div className={style.home_container__home}>
+        <div className={style.home_container__home} id="home">
           <p className={style.home_container__home__title}>
             Resist the temptation to SELL
           </p>
@@ -112,7 +112,7 @@ const Home: NextPage = () => {
             </div>
           </div>
         </div>
-        <div className={style.home_container__how_it_works}>
+        <div className={style.home_container__how_it_works} id="how_it_works">
           <p className={style.home_container__how_it_works__title}>
             How it works?
           </p>
@@ -206,7 +206,7 @@ const Home: NextPage = () => {
               WITHDRAW
             </p>
             <div
-              className={style.home_container__how_it_works__step__description}
+              className={`${style.home_container__how_it_works__step__description} ${style.home_container__how_it_works__step__last}`}
             >
               <p
                 className={

@@ -144,6 +144,118 @@
   }
 }
 
+@media only screen and (max-width: 1600px) and (max-height: 535px) {
+  .home_container {
+    &__home {
+      height: 600px;
+    }
+  }
+}
+
+@media only screen and (max-width: 924px) {
+  .home_container {
+    &__home {
+      padding: 0px 0 0 $padding_7x;
+    }
+  }
+}
+
+@media only screen and (max-width: 886px) {
+  .home_container {
+    &__home {
+      background: url("/assets/images/homepage_background.svg") no-repeat;
+      margin: 0;
+      padding: 0 $padding_7x;
+      &__title,
+      &__content,
+      &__stats {
+        max-width: 100%;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 724px) {
+  .home_container {
+    &__how_it_works {
+      &__title {
+        padding: $padding_6x 0;
+      }
+      &__step {
+        flex-direction: column;
+        align-items: center;
+        padding: $padding_5x 0;
+        &__title {
+          &::after {
+            content: "";
+            height: 0px;
+            width: 0px;
+            margin: $margin_5x 0 0 0;
+            background: $color_step;
+          }
+        }
+        &__description {
+          width: 100%;
+          &::after {
+            content: "";
+            height: 100px;
+            width: 2px;
+            margin: $margin_5x 0 0 0;
+            background: $color_step;
+          }
+        }
+        &__last {
+          &::after {
+            height: 0px;
+            width: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .home_container {
+    &__home {
+      background: url("/assets/images/homepage_background.svg") no-repeat;
+      margin: 0;
+      padding: 0 $padding_7x;
+      &__title,
+      &__content,
+      &__stats {
+        max-width: 100%;
+        // margin-top: 50px;
+      }
+      &__title {
+        font-size: $font_size_6x;
+      }
+      &__content {
+        &__button {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) and (max-height: 535px) {
+  .home_container {
+    &__home {
+      height: 535px;
+    }
+  }
+}
+
+@media only screen and (max-width: 450px) and (max-height: 535px) {
+  .home_container {
+    &__home {
+      height: 700px;
+    }
+  }
+}
+
 @keyframes spinner {
   from {
     transform: rotate(0deg);
