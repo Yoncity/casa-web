@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import type { NextPage } from "next";
-import Router from "next/router";
 import { useSelector, useDispatch } from "react-redux";
 import dayjs from "dayjs";
 import Web3Controller from "../helpers/Web3Controller";
@@ -36,14 +35,10 @@ const Dashboard: NextPage = () => {
     ({ getAccounts }): InitialState["getAccounts"] => getAccounts
   );
 
-  const {
-    data: createAccount,
-    error: createAccountError,
-    loading: createAccountLoading,
-    pending: createAccountPending,
-  } = useSelector(
-    ({ createAccount }): InitialState["createAccount"] => createAccount
-  );
+  const { error: createAccountError, loading: createAccountLoading } =
+    useSelector(
+      ({ createAccount }): InitialState["createAccount"] => createAccount
+    );
 
   const dispatch = useDispatch();
 
@@ -71,10 +66,6 @@ const Dashboard: NextPage = () => {
       dispatch(getAccounts(address));
     }
   }, [dispatch, address]);
-
-  if (web3Controller && address) {
-    web3Controller.listenToEvents(address, dispatch, () => setShowModal(false));
-  }
 
   const body = () => {
     if (accountsLoading) {
@@ -189,22 +180,23 @@ const Dashboard: NextPage = () => {
             className={`${style.button} ${style.button_primary}`}
             onClick={() => {
               if (web3Controller && address) {
-                web3Controller.newLock(address, selectedDate, amount, dispatch);
+                web3Controller.newLock(
+                  address,
+                  selectedDate,
+                  amount,
+                  dispatch,
+                  () => setShowModal(false)
+                );
               }
             }}
-            disabled={createAccountLoading || createAccountPending}
+            disabled={createAccountLoading}
           >
             {createAccountLoading && (
               <>
                 <Loader mini={true} /> Creating Account
               </>
             )}
-            {createAccountPending && (
-              <>
-                <Loader mini={true} /> Confirming Transaction
-              </>
-            )}
-            {!createAccountLoading && !createAccountPending && "Finish"}
+            {!createAccountLoading && "Finish"}
           </button>
         </div>
       </Modal>

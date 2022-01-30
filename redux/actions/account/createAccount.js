@@ -6,10 +6,6 @@ const createAccountStarted = () => ({
   type: types.CREATE_ACCOUNT_START,
 });
 
-export const createAccountPending = () => ({
-  type: types.CREATE_ACCOUNT_PENDING,
-});
-
 const createAccountSuccess = (data) => ({
   type: types.CREATE_ACCOUNT_SUCCESS,
   payload: { data },
@@ -20,7 +16,7 @@ const createAccountError = (error) => ({
   payload: { error },
 });
 
-const createAccount = (data) => async (dispatch) => {
+const createAccount = (data) => async (dispatch, callback) => {
   dispatch(createAccountStarted());
   try {
     const res = await axios.post("/accounts", data);
@@ -31,6 +27,8 @@ const createAccount = (data) => async (dispatch) => {
 
     dispatch(createAccountSuccess(resData));
     dispatch(addNewAccount(resData));
+
+    callback?.();
   } catch (error) {
     dispatch(createAccountError(error.message));
   }

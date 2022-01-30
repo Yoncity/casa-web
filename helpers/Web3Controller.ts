@@ -1,12 +1,8 @@
 import dayjs from "dayjs";
 import Web3 from "web3";
 import CASA_ABI from "../constants/contracts/abi/casa.json";
-import createAccount, {
-  createAccountPending,
-} from "../redux/actions/account/createAccount";
-import updateAccount, {
-  updateAccountPending,
-} from "../redux/actions/account/updateAccount";
+import createAccount from "../redux/actions/account/createAccount";
+import updateAccount from "../redux/actions/account/updateAccount";
 
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 
@@ -47,62 +43,13 @@ class Web3Controller {
     return totalUsers;
   }
 
-  isDuplicate(blockNumber: Number) {
-    if (this.BLOCKS.includes(blockNumber)) return true;
-    this.BLOCKS.push(blockNumber);
-    return false;
-  }
-
-  listenToEvents(address: string, dispatch: any, callback: any) {
-    this.casaContract.events.allEvents(
-      { fromBlock: "latest", filter: { ownerAddress: [address] } },
-      (error: any, result: any) => {
-        if (error) {
-          console.log("🚀 --- listenToEvents --- error", error);
-          return;
-        }
-
-        if (!this.isDuplicate(result.blockNumber)) {
-          const accountDetails = {
-            owner: (result.returnValues.ownerAddress as string).toLowerCase(),
-            accountNumber: result.returnValues._account,
-          };
-          const data = {
-            transactionHash: result.transactionHash,
-            blockNumber: result.blockNumber,
-            blockHash: result.blockHash,
-            signature: result.signature,
-          };
-          switch (result.event) {
-            case "NewAccount":
-              createAccount({
-                ...accountDetails,
-                balance: result.returnValues._amount,
-                timestamp: result.returnValues._timestamp,
-                ...data,
-              })(dispatch);
-              break;
-            case "UpdateAccount":
-              updateAccount(accountDetails, {
-                ...data,
-                amount: result.returnValues._amount,
-                status: "update_account",
-              })(dispatch);
-              break;
-            case "CloseAccount":
-              updateAccount(accountDetails, {
-                ...data,
-                status: "close_account",
-              })(dispatch);
-              break;
-          }
-          callback();
-        }
-      }
-    );
-  }
-
-  newLock(address: string, _timestamp: Date, _amount: String, dispatch: any) {
+  newLock(
+    address: string,
+    _timestamp: Date,
+    _amount: String,
+    dispatch: any,
+    callback: any
+  ) {
     const amount = this.web3.utils.toWei(_amount);
     const timestamp = dayjs(_timestamp).format("YYYYMMDD");
     const encoded = this.casaContract.methods.lockEth(timestamp).encodeABI();
@@ -116,7 +63,14 @@ class Web3Controller {
 
     this.ethereum
       .request({ method: "eth_sendTransaction", params: [tx] })
-      .then(() => dispatch(createAccountPending()))
+      .then((transactionHash: string) => {
+        createAccount({
+          balance: amount,
+          timestamp,
+          owner: address,
+          transactionHash,
+        })(dispatch, callback);
+      })
       .catch((error: any) => console.log("🚀 --- newLock --- error", error));
   }
 
@@ -124,7 +78,8 @@ class Web3Controller {
     address: string,
     accountNumber: number,
     _amount: String,
-    dispatch: any
+    dispatch: any,
+    callback: any
   ) {
     const amount = this.web3.utils.toWei(_amount);
     const encoded = this.casaContract.methods
@@ -140,8 +95,19 @@ class Web3Controller {
 
     this.ethereum
       .request({ method: "eth_sendTransaction", params: [tx] })
-      .then(() => dispatch(updateAccountPending()))
-      .catch((error: any) => console.log("🚀 --- newLock --- error", error));
+      .then((transactionHash: string) => {
+        updateAccount(
+          { owner: address, accountNumber },
+          {
+            transactionHash,
+            type: "close_account",
+          }
+        )(dispatch, callback);
+        // dispatch(updateAccountPending())
+      })
+      .catch((error: any) =>
+        console.log("🚀 --- updateAccount --- error", error)
+      );
   }
 
   closeAccount(address: string, accountNumber: Number, dispatch: any) {
@@ -158,8 +124,18 @@ class Web3Controller {
 
     this.ethereum
       .request({ method: "eth_sendTransaction", params: [tx] })
-      .then(() => dispatch(createAccountPending()))
-      .catch((error: any) => console.log("🚀 --- newLock --- error", error));
+      .then((transactionHash: string) => {
+        updateAccount(
+          { owner: address, accountNumber },
+          {
+            transactionHash,
+            type: "close_account",
+          }
+        )(dispatch);
+      })
+      .catch((error: any) =>
+        console.log("🚀 --- closeAccount --- error", error)
+      );
   }
 }
 

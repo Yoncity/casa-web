@@ -5,10 +5,6 @@ const updateAccountStarted = () => ({
   type: types.UPDATE_ACCOUNT_START,
 });
 
-export const updateAccountPending = () => ({
-  type: types.UPDATE_ACCOUNT_PENDING,
-});
-
 const updateAccountSuccess = (data) => ({
   type: types.UPDATE_ACCOUNT_SUCCESS,
   payload: { data },
@@ -19,7 +15,7 @@ const updateAccountError = (error) => ({
   payload: { error },
 });
 
-const updateAccount = (account, data) => async (dispatch) => {
+const updateAccount = (account, data) => async (dispatch, callback) => {
   dispatch(updateAccountStarted());
   try {
     const res = await axios.put(
@@ -32,6 +28,8 @@ const updateAccount = (account, data) => async (dispatch) => {
     if (status !== 200) throw new Error(message);
 
     dispatch(updateAccountSuccess(data));
+
+    callback?.();
   } catch (error) {
     dispatch(updateAccountError(error.message));
   }

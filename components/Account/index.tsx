@@ -130,7 +130,8 @@ const Account: React.FC<Props> = ({ data, web3Controller }) => {
                   address,
                   data.accountNumber,
                   amount,
-                  dispatch
+                  dispatch,
+                  () => setShowModal(false)
                 );
               }
             }}
