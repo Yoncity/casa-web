@@ -1,34 +1,48 @@
 import Link from "next/link";
+import { useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import style from "./index.module.scss";
+import { InitialState } from "../../redux/initialState";
+import locales from "../../constants/locale";
 
-const Header: React.FC<{}> = () => {
+const Header: React.FC<{ inverted: boolean }> = ({ inverted }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [blend, setBlend] = useState(true);
-  const [activeHeader, setActiveHeader] = useState("Home");
+  const [activeHeader, setActiveHeader] = useState(
+    inverted ? "Dashboard" : "Home"
+  );
+
+  const { lang = "en" } = useSelector(
+    ({ locale }): InitialState["locale"] => locale
+  );
 
   const HEADER_OFFSET = 100;
 
   const listenScrollEvent = () => {
-    const OFFSET = window.scrollY;
+    if (inverted) setActiveHeader("Dashboard");
+    else {
+      const OFFSET = window.scrollY;
 
-    if (OFFSET <= HEADER_OFFSET) {
-      setBlend(true);
-    } else if (OFFSET >= HEADER_OFFSET) {
-      setBlend(false);
+      if (OFFSET <= HEADER_OFFSET) {
+        setBlend(true);
+      } else if (OFFSET >= HEADER_OFFSET) {
+        setBlend(false);
+      }
+
+      if (OFFSET >= 530) setActiveHeader("How it Works?");
+      else setActiveHeader("Home");
     }
-
-    if (OFFSET >= 530) setActiveHeader("How it Works?");
-    else setActiveHeader("Home");
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", listenScrollEvent);
-    return () => {
-      window.removeEventListener("scroll", listenScrollEvent);
-    };
-  }, []);
+    if (!inverted) {
+      window.addEventListener("scroll", listenScrollEvent);
+      return () => {
+        window.removeEventListener("scroll", listenScrollEvent);
+      };
+    }
+  }, [inverted]);
 
   const ref = useRef(null);
 
@@ -67,7 +81,7 @@ const Header: React.FC<{}> = () => {
     <div
       className={`${style.header_container} ${
         !blend && style.white_background
-      } ${showMenu && style.white_background}`}
+      } ${(inverted || showMenu) && style.white_background}`}
       ref={ref}
     >
       <div className={`${style.header_container__left}`}>
@@ -80,20 +94,27 @@ const Header: React.FC<{}> = () => {
             onClick={() => setShowMenu(!showMenu)}
           />
         </div>
-        <div className={style.header_container__left__app_name_container}>
-          <Image
-            src="/assets/icons/casa.png"
-            alt="Casa icon"
-            width={56}
-            height={56}
-          />
-          <a
-            href="#"
-            className={`${style.header_container__left__app_name_container__name} ${style.app_name}`}
-          >
-            CASA
+
+        <Link href={inverted ? "/#home" : ""}>
+          <a>
+            <div
+              className={style.header_container__left__app_name_container}
+              onClick={() => linkToDiv("#home")}
+            >
+              <Image
+                src="/assets/icons/casa.png"
+                alt="Casa icon"
+                width={56}
+                height={56}
+              />
+              <p
+                className={`${style.header_container__left__app_name_container__name} ${style.app_name}`}
+              >
+                CASA
+              </p>
+            </div>
           </a>
-        </div>
+        </Link>
       </div>
 
       <div
@@ -101,20 +122,51 @@ const Header: React.FC<{}> = () => {
           showMenu ? style.active_nav : ""
         }`}
       >
-        <p
-          className={`${style.link} ${setActiveHeaderClass("Home")}`}
-          onClick={() => linkToDiv("#home")}
-        >
-          Home
-        </p>
-        <p
-          className={`${style.link} ${setActiveHeaderClass("How it Works?")}`}
-          onClick={() => linkToDiv("#how_it_works")}
-        >
-          How it Works?
-        </p>
+        {inverted ? (
+          <>
+            <Link href={inverted ? "/#home" : ""}>
+              <a
+                className={`${style.link} ${setActiveHeaderClass("Home")}`}
+                onClick={() => linkToDiv("#home")}
+              >
+                {locales("home", lang)}
+              </a>
+            </Link>
+
+            <Link href={inverted ? "/#how_it_works" : ""}>
+              <a
+                className={`${style.link} ${setActiveHeaderClass(
+                  "How it Works?"
+                )}`}
+                onClick={() => linkToDiv("#how_it_works")}
+              >
+                {locales("how_it_works_title", lang)}
+              </a>
+            </Link>
+          </>
+        ) : (
+          <>
+            <p
+              className={`${style.link} ${setActiveHeaderClass("Home")}`}
+              onClick={() => linkToDiv("#home")}
+            >
+              {locales("home", lang)}
+            </p>
+            <p
+              className={`${style.link} ${setActiveHeaderClass(
+                "How it Works?"
+              )}`}
+              onClick={() => linkToDiv("#how_it_works")}
+            >
+              {locales("how_it_works_title", lang)}
+            </p>
+          </>
+        )}
+
         <Link href="/dashboard">
-          <a className={style.link}>Dashboard</a>
+          <a className={`${style.link} ${setActiveHeaderClass("Dashboard")}`}>
+            {locales("dashboard", lang)}
+          </a>
         </Link>
       </div>
     </div>

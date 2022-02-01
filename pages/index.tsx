@@ -7,8 +7,10 @@ import style from "../styles/pages/index.module.scss";
 import Web3Controller from "../helpers/Web3Controller";
 import { useRouter } from "next/router";
 import authenticate from "../redux/actions/auth";
-import getStatistics from "../redux/actions/statistics";
+import getStatistics from "../redux/actions/statistics/contractStatistics";
+import getRate from "../redux/actions/rate";
 import { InitialState } from "../redux/initialState";
+import locales from "../constants/locale";
 
 const Home: NextPage = () => {
   const [web3Controller, setWeb3Controller] = useState<Web3Controller>();
@@ -19,15 +21,26 @@ const Home: NextPage = () => {
 
   const dispatch = useDispatch();
 
+  const { lang = "en" } = useSelector(
+    ({ locale }): InitialState["locale"] => locale
+  );
+
   const { address, error, loading } = useSelector(
     ({ authenticate }): InitialState["authenticate"] => authenticate
+  );
+
+  const { data: rate, loading: rateLoading } = useSelector(
+    ({ rate }): InitialState["rate"] => rate
   );
 
   const {
     data: statisticsData,
     error: statisticsError,
     loading: statisticsLoading,
-  } = useSelector(({ statistics }): InitialState["statistics"] => statistics);
+  } = useSelector(
+    ({ contractStatistics }): InitialState["contractStatistics"] =>
+      contractStatistics
+  );
 
   async function getContractBalance(_web3Controller: Web3Controller) {
     let balance = await _web3Controller.getContractBalance();
@@ -40,7 +53,17 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    // getStatistics()(dispatch);
+    if (!rate && !rateLoading) {
+      getRate()(dispatch);
+    }
+
+    if (
+      statisticsData &&
+      !statisticsData.totalUsers &&
+      !statisticsData.statistics
+    ) {
+      getStatistics()(dispatch);
+    }
 
     let _web3Controller: Web3Controller | null = new Web3Controller();
 
@@ -70,14 +93,13 @@ const Home: NextPage = () => {
       <div className={style.home_container}>
         <div className={style.home_container__home} id="home">
           <p className={style.home_container__home__title}>
-            Resist the temptation to SELL
+            {locales("home_title", lang)}
           </p>
           <p className={style.home_container__home__content}>
-            Are you tired of selling your crypto at a bad time, try CASA.
+            {locales("home_info_1", lang)}
           </p>
           <p className={style.home_container__home__content}>
-            Casa gives you the option to lock your crypto for your chosen amount
-            of time, so you can avoid making hastey decisions.
+            {locales("home_info_2", lang)}
           </p>
 
           <button
@@ -89,37 +111,51 @@ const Home: NextPage = () => {
                 style.home_container__home__content__button__loader
               } ${loading ? style.show_loader : ""}`}
             ></div>
-            {address ? "Goto Dashboard" : "GET STARTED"}
+
+            {address
+              ? locales("home_getting_goto_dashboard_button", lang)
+              : locales("home_getting_started_button", lang)}
           </button>
 
-          <div className={style.home_container__home__stats}>
-            <div className={style.home_container__home__stats__data}>
-              <p className={style.home_container__home__stats__data__title}>
-                Total Users
-              </p>
-              <p className={style.home_container__home__stats__data__content}>
-                {totalUsers}
-              </p>
-            </div>
+          {statisticsData &&
+            statisticsData.totalUsers &&
+            statisticsData.statistics && (
+              <div className={style.home_container__home__stats}>
+                <div className={style.home_container__home__stats__data}>
+                  <p className={style.home_container__home__stats__data__title}>
+                    {locales("home_total_users", lang)}
+                  </p>
+                  <p
+                    className={style.home_container__home__stats__data__content}
+                  >
+                    {statisticsData.totalUsers}
+                  </p>
+                </div>
 
-            <div className={style.home_container__home__stats__data}>
-              <p className={style.home_container__home__stats__data__title}>
-                Locked Volume
-              </p>
-              <p className={style.home_container__home__stats__data__content}>
-                {contractBalance}
-              </p>
-            </div>
-          </div>
+                <div className={style.home_container__home__stats__data}>
+                  <p className={style.home_container__home__stats__data__title}>
+                    {locales("home_locked_volume", lang)}
+                  </p>
+                  <p
+                    className={style.home_container__home__stats__data__content}
+                  >
+                    {web3Controller?.convertFromWeiToEth(
+                      statisticsData.statistics.currentLockedVolume
+                    )}{" "}
+                    ETH
+                  </p>
+                </div>
+              </div>
+            )}
         </div>
         <div className={style.home_container__how_it_works} id="how_it_works">
           <p className={style.home_container__how_it_works__title}>
-            How it works?
+            {locales("how_it_works_title", lang)}
           </p>
 
           <div className={style.home_container__how_it_works__step}>
             <p className={style.home_container__how_it_works__step__title}>
-              CONNECT
+              {locales("how_it_works_step_1", lang)}
             </p>
             <div
               className={style.home_container__how_it_works__step__description}
@@ -129,7 +165,7 @@ const Home: NextPage = () => {
                   style.home_container__how_it_works__step__description__content
                 }
               >
-                Connect you wallet with one of the following supported wallets.
+                {locales("how_it_works_step_1_info", lang)}
               </p>
               <div
                 className={
@@ -166,7 +202,7 @@ const Home: NextPage = () => {
 
           <div className={style.home_container__how_it_works__step}>
             <p className={style.home_container__how_it_works__step__title}>
-              LOCK
+              {locales("how_it_works_step_2", lang)}
             </p>
             <div
               className={style.home_container__how_it_works__step__description}
@@ -176,15 +212,14 @@ const Home: NextPage = () => {
                   style.home_container__how_it_works__step__description__content
                 }
               >
-                Lock your crypto funds in an account for a specified amount of
-                time of your choosing.
+                {locales("how_it_works_step_2_info", lang)}
               </p>
             </div>
           </div>
 
           <div className={style.home_container__how_it_works__step}>
             <p className={style.home_container__how_it_works__step__title}>
-              WAIT
+              {locales("how_it_works_step_3", lang)}
             </p>
             <div
               className={style.home_container__how_it_works__step__description}
@@ -194,7 +229,7 @@ const Home: NextPage = () => {
                   style.home_container__how_it_works__step__description__content
                 }
               >
-                Wait for the desired time that you would wish to lock your funds
+                {locales("how_it_works_step_3_info", lang)}
               </p>
             </div>
           </div>
@@ -203,7 +238,7 @@ const Home: NextPage = () => {
             <p
               className={`${style.home_container__how_it_works__step__title} ${style.home_container__how_it_works__step__last}`}
             >
-              WITHDRAW
+              {locales("how_it_works_step_4", lang)}
             </p>
             <div
               className={`${style.home_container__how_it_works__step__description} ${style.home_container__how_it_works__step__last}`}
@@ -213,7 +248,7 @@ const Home: NextPage = () => {
                   style.home_container__how_it_works__step__description__content
                 }
               >
-                Once the lockdown period is over, withdraw your money
+                {locales("how_it_works_step_4_info", lang)}
               </p>
             </div>
           </div>

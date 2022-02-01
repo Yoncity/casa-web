@@ -4,16 +4,26 @@ export default {
     error: null,
     address: null,
   },
-  statistics: {
+  contractStatistics: {
     loading: false,
     error: null,
-    data: null,
+    data: [],
+  },
+  userStatistics: {
+    loading: false,
+    error: null,
+    data: [],
+  },
+  transactions: {
+    loading: false,
+    error: null,
+    data: [],
   },
   createAccount: {
     loading: false,
     pending: false,
     error: null,
-    data: null,
+    data: [],
   },
   getAccounts: {
     loading: false,
@@ -22,16 +32,27 @@ export default {
   },
   updateAccount: {
     loading: false,
-    pending: true,
     error: null,
     data: [],
+  },
+  rate: {
+    loading: false,
+    error: null,
+    data: null,
+  },
+  locale: {
+    value: "en",
   },
 };
 
 export type InitialState = {
   authenticate: Record<string, any>;
-  statistics: Record<string, any>;
+  contractStatistics: Record<string, any>;
+  userStatistics: Record<string, any>;
+  transactions: Record<string, any>;
   createAccount: Record<string, any>;
   getAccounts: Record<string, any>;
   updateAccount: Record<string, any>;
+  rate: Record<string, any>;
+  locale: Record<string, any>;
 };

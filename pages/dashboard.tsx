@@ -4,15 +4,20 @@ import { useSelector, useDispatch } from "react-redux";
 import dayjs from "dayjs";
 import Web3Controller from "../helpers/Web3Controller";
 import style from "../styles/pages/dashboard.module.scss";
-import AmountInput from "../components/AmountInput";
+import AmountInput from "../components/Inputs/AmountInput";
 import Modal from "../components/Modal";
 import Account from "../components/Account";
-import CustomDatePicker from "../components/CustomDatePicker";
+import CustomDatePicker from "../components/Inputs/CustomDatePicker";
 import Loader from "../components/Loader";
-import NoAccount from "../components/NoAccount";
+import NoAccount from "../components/Account/NoAccount";
 import { InitialState } from "../redux/initialState";
 import authenticate from "../redux/actions/auth";
 import getAccounts from "../redux/actions/account/getAccounts";
+import getRate from "../redux/actions/rate";
+import Layout from "../components/Layout";
+import ProfileHome from "../components/ProfileHome";
+import Transactions from "../components/Transactions";
+import locales from "../constants/locale";
 
 const Dashboard: NextPage = () => {
   const [web3Controller, setWeb3Controller] = useState<Web3Controller>();
@@ -22,23 +27,24 @@ const Dashboard: NextPage = () => {
   const [amountError, setAmountError] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [activeHeader, setActiveHeader] = useState("Home");
+
+  const { lang = "en" } = useSelector(
+    ({ locale }): InitialState["locale"] => locale
+  );
 
   const { address, error, loading } = useSelector(
     ({ authenticate }): InitialState["authenticate"] => authenticate
-  );
-
-  const {
-    data: accounts,
-    error: accountsError,
-    loading: accountsLoading,
-  } = useSelector(
-    ({ getAccounts }): InitialState["getAccounts"] => getAccounts
   );
 
   const { error: createAccountError, loading: createAccountLoading } =
     useSelector(
       ({ createAccount }): InitialState["createAccount"] => createAccount
     );
+
+  const { data: rate, loading: rateLoading } = useSelector(
+    ({ rate }): InitialState["rate"] => rate
+  );
 
   const dispatch = useDispatch();
 
@@ -62,32 +68,22 @@ const Dashboard: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    if (address) {
-      dispatch(getAccounts(address));
+    if (!rate && !rateLoading) {
+      getRate()(dispatch);
     }
-  }, [dispatch, address]);
+  }, [dispatch, rate, rateLoading]);
 
   const body = () => {
-    if (accountsLoading) {
-      return <Loader />;
+    if (activeHeader === "Home") {
+      return <ProfileHome web3Controller={web3Controller} />;
     }
 
-    if (accountsError) {
-      return <p className="error">{accountsError}</p>;
+    if (activeHeader === "Accounts") {
+      return <Account web3Controller={web3Controller} />;
     }
 
-    if (accounts && accounts.length === 0) {
-      return <NoAccount />;
-    }
-
-    if (accounts) {
-      return accounts.map((account: any) => (
-        <Account
-          key={account._id}
-          data={account}
-          web3Controller={web3Controller}
-        />
-      ));
+    if (activeHeader === "Transactions") {
+      return <Transactions web3Controller={web3Controller} />;
     }
   };
 
@@ -103,27 +99,55 @@ const Dashboard: NextPage = () => {
           }}
         >
           {loading && <Loader mini={true} />}
-          Please Connect Wallet
+          {locales("dashboard_please_connect_wallet", lang)}
         </button>
       </div>
     );
   };
 
+  const setActiveHeaderClass = (header: string) => {
+    if (header === activeHeader) return style.active;
+    return "";
+  };
+
   return (
-    <>
+    <Layout inverted>
       {!address ? (
         notLoggedIn()
       ) : (
         <div className={style.dashboard_container}>
           <div className={style.dashboard_container__header}>
-            <p className={style.dashboard_container__header__title}>
-              Locked Accounts
-            </p>
+            <div className={style.dashboard_container__header__left}>
+              <p
+                className={`${
+                  style.dashboard_container__header__left__links
+                } ${setActiveHeaderClass("Home")}`}
+                onClick={() => setActiveHeader("Home")}
+              >
+                {locales("home", lang)}
+              </p>
+              <p
+                className={`${
+                  style.dashboard_container__header__left__links
+                } ${setActiveHeaderClass("Accounts")}`}
+                onClick={() => setActiveHeader("Accounts")}
+              >
+                {locales("accounts", lang)}
+              </p>
+              <p
+                className={`${
+                  style.dashboard_container__header__left__links
+                } ${setActiveHeaderClass("Transactions")}`}
+                onClick={() => setActiveHeader("Transactions")}
+              >
+                {locales("transactions", lang)}
+              </p>
+            </div>
             <button
               className={`${style.button} ${style.button_primary}`}
               onClick={() => setShowModal(true)}
             >
-              Lock Now
+              {locales("dashboard_lock_add_account", lang)}
             </button>
           </div>
 
@@ -131,17 +155,21 @@ const Dashboard: NextPage = () => {
         </div>
       )}
       <Modal
-        header="New Account"
+        header={locales("dashboard_new_account", lang)}
         showModal={showModal}
         setShowModal={setShowModal}
       >
         <div className={style.new_account}>
           <AmountInput
-            placeholder="Amount"
+            placeholder={locales("amount", lang)}
             name="amount"
             value={amount}
             onChange={handleAmountChange}
-            onClickMax={() => {}}
+            onClickMax={() => {
+              web3Controller
+                ?.getBalance(address)
+                .then((balance: string) => setAmount(balance));
+            }}
             error={amountError}
           />
 
@@ -150,7 +178,7 @@ const Dashboard: NextPage = () => {
               className={style.new_account__lock_date__title}
               onClick={() => setShowDatePicker(true)}
             >
-              Unlock Period
+              {locales("dashboard_unlock_period", lang)}
             </p>
             <div
               className={style.new_account__lock_date__date_container}
@@ -193,14 +221,15 @@ const Dashboard: NextPage = () => {
           >
             {createAccountLoading && (
               <>
-                <Loader mini={true} /> Creating Account
+                <Loader mini={true} />{" "}
+                {locales("dashboard_creating_account", lang)}
               </>
             )}
-            {!createAccountLoading && "Finish"}
+            {!createAccountLoading && locales("dashboard_finish_button", lang)}
           </button>
         </div>
       </Modal>
-    </>
+    </Layout>
   );
 };
 

@@ -2,7 +2,7 @@
 @use "../abstracts" as *;
 
 .dashboard_container {
-  height: 100vh;
+  min-height: 100vh;
   background: $background_white;
   display: flex;
   flex-direction: column;
@@ -13,19 +13,44 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    // margin: $margin_6x 0 0 0;
-    &__title {
-      font-size: $font_size_7x;
-      font-weight: 500;
+    margin: 90px 0 0 0;
+    &__left {
+      display: flex;
+      &__links {
+        font-size: $font_size_3x;
+        font-weight: 400;
+        padding: 0 $padding_2x;
+        color: $color_black_2;
+        padding: $padding_1x $padding_2x;
+        margin-right: $margin_3x;
+        cursor: pointer;
+        transition: 0.1s linear;
+        &:hover {
+          color: $color_black;
+          border: none;
+          border-bottom: 1px solid $color_black;
+        }
+
+        &:last-child {
+          margin-right: 0;
+        }
+        &.active {
+          border: none;
+          border-bottom: 1px solid $color_black;
+          color: $color_black;
+          font-weight: 500;
+          transition: 0.1s linear;
+        }
+      }
     }
   }
   &__content {
     display: flex;
+    // flex-direction: column;
     margin: $margin_4x 0;
-    align-items: center;
     justify-content: flex-start;
     flex-wrap: wrap;
-    overflow-y: auto;
+    // flex: 1;
   }
 }
 
@@ -46,6 +71,7 @@
     }
     &__title {
       // font-style: italic;
+      flex: 1;
     }
     &__date_container {
       display: flex;
@@ -82,5 +108,56 @@
     color: $color_white;
     border-radius: $border_radius_3x;
     cursor: pointer;
+  }
+}
+
+@media only screen and (max-width: 924px) {
+  .dashboard_container {
+    padding: $padding_2x $padding_4x;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .dashboard_container {
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      &__left {
+        margin-bottom: $margin_3x;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 420px) {
+  .new_account {
+    &__lock_date {
+      p {
+        font-size: $font_size_2x;
+        color: $color_gray_4;
+      }
+      &__date_container {
+        display: flex;
+        p {
+          padding: $padding_3x $padding_2x;
+          color: $color_gray_2;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 330px) {
+  .dashboard_container {
+    padding: $padding_3x 0;
+    &__header {
+      padding: $padding_1x $padding_2x;
+      &__left {
+        flex-direction: column;
+        &__links {
+          margin-right: 0;
+        }
+      }
+    }
   }
 }

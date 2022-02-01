@@ -1,4 +1,4 @@
-@use "../../styles/abstracts/" as *;
+@use "../../../styles/abstracts/" as *;
 
 .no_account_container {
   //   border: 1px solid black;
@@ -7,6 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
   p {
     font-size: $font_size_6x;
     color: $color_gray_2;

@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import style from "./index.module.scss";
 
@@ -8,6 +8,24 @@ const CustomDatePicker = ({
   setSelectedDate,
   setShowDatePicker,
 }) => {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      // @ts-ignore
+      if (ref.current && !ref.current.contains(event.target)) {
+        setShowDatePicker(false);
+      }
+    };
+
+    // Bind the event listener
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref, setShowDatePicker]);
+
   const years = [2022, 2023, 2024, 2025, 2026, 2027, 2028];
   const months = [
     "January",
@@ -32,7 +50,7 @@ const CustomDatePicker = ({
     return new Date(date).getMonth();
   };
   return (
-    <div className={style.datepicker_container}>
+    <div className={style.datepicker_container} ref={ref}>
       <DatePicker
         inline
         renderCustomHeader={({

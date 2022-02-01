@@ -1,12 +1,16 @@
 import Footer from "../Footer";
 import Header from "../Header";
 
-const Layout: React.FC<{}> = ({ children }) => {
+type Props = {
+  inverted?: boolean;
+};
+
+const Layout: React.FC<Props> = ({ inverted = false, children }) => {
   return (
     <>
-      <Header />
+      <Header inverted={inverted} />
       {children}
-      <Footer />
+      {!inverted && <Footer />}
     </>
   );
 };

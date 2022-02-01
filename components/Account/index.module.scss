@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   padding: $padding_6x;
-  margin: $margin_4x;
+  margin: 0 $margin_4x $margin_5x 0;
   width: 256px;
   border: 1px solid $color_border;
   border-radius: $border_radius_2x;
@@ -157,5 +157,12 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .account_container {
+    margin: 0 $margin_1x $margin_5x;
+    width: 100%;
   }
 }

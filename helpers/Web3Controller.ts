@@ -38,9 +38,21 @@ class Web3Controller {
     return this.web3.utils.fromWei(balance, "ether");
   }
 
+  convertFromWeiToEth = (balance: string) => {
+    return Number(this.web3.utils.fromWei(balance, "ether")).toFixed(2);
+  };
+
   async getTotalUsers(): Promise<Number> {
     const totalUsers = await this.casaContract.methods.getTotalUsers().call();
     return totalUsers;
+  }
+
+  async getBalance(address: string): Promise<string> {
+    if (address) {
+      const balance = await this.web3.eth.getBalance(address);
+      return balance;
+    }
+    return "0";
   }
 
   newLock(

@@ -1,0 +1,48 @@
+@use "../../../styles/abstracts/" as *;
+
+.stat_card_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  margin: $margin_5x $margin_6x $margin_5x 0;
+  padding: $padding_5x $padding_7x;
+  background-color: $color_white;
+  border: 1px solid $color_border;
+  border-radius: $border_radius_2x;
+  &:last-child {
+    margin-right: 0;
+  }
+  &__title {
+    font-size: $font_size_2x;
+    font-weight: 500;
+    color: $color_gray_3;
+    text-align: center;
+  }
+  &__divider {
+    border-top: 1px solid $color_border;
+    margin: $margin_3x;
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 924px) {
+  .stat_card_container {
+    margin: $margin_5x $margin_3x $margin_5x 0;
+  }
+}
+
+@media only screen and (max-width: 724px) {
+  .stat_card_container {
+    margin: $margin_5x $margin_1x $margin_5x 0;
+    padding: $padding_5x $padding_5x;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .stat_card_container {
+    margin: $margin_2x 0;
+    padding: $padding_4x;
+  }
+}

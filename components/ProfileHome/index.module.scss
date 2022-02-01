@@ -1,0 +1,50 @@
+@use "../../styles/abstracts/" as *;
+
+.profile_home_container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  &__stat {
+    display: flex;
+    border-bottom: 1px solid $color_border;
+    &__data {
+      color: $color_gray_1;
+      font-size: $font_size_5x;
+      font-weight: 700;
+      text-align: center;
+    }
+    &:first-child {
+      margin-top: -$margin_4x;
+    }
+    &:last-child {
+      border: none;
+    }
+  }
+}
+@media only screen and (max-width: 600px) {
+  .profile_home_container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    &__stat {
+      display: flex;
+      flex-direction: column;
+      padding: $padding_6x 0;
+      margin: $margin_1x 0;
+      border-bottom: 2px solid $color_primary;
+
+      &__data {
+        color: $color_gray_1;
+        font-size: $font_size_5x;
+        font-weight: 700;
+        text-align: center;
+      }
+      &:first-child {
+        margin-top: -$margin_4x;
+      }
+      &:last-child {
+        border: none;
+      }
+    }
+  }
+}

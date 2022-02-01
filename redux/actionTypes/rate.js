@@ -1,0 +1,3 @@
+export const GET_RATE_START = "GET_RATE_START";
+export const GET_RATE_SUCCESS = "GET_RATE_SUCCESS";
+export const GET_RATE_ERROR = "GET_RATE_ERROR";

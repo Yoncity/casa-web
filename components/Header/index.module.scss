@@ -91,7 +91,7 @@
   .header_container {
     padding: $padding_2x $padding_6x;
     &.white_background {
-      padding: 0;
+      padding: 0 $padding_2x;
     }
   }
 }
